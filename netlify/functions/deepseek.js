@@ -1,3 +1,4 @@
+
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -17,9 +18,10 @@ exports.handler = async function(event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing text or lang' }) };
   }
 
+  // Word limit check
   const wordCount = text.trim().split(/\s+/).length;
-  if (wordCount > 1000) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Text exceeds 1000 words' }) };
+  if (wordCount > 500) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Text exceeds 500 words' }) };
   }
 
   const styleMap = {
@@ -31,6 +33,7 @@ exports.handler = async function(event) {
 
   const systemPrompt = lang === 'English'
     ? `You are a professional editor specializing in removing AI writing patterns. Rewrite the text to sound authentically human.
+
 Rules:
 - Remove filler phrases: "Furthermore", "It is worth noting", "In conclusion", "Moreover", "It is important to note", "It is crucial to", "Delve into"
 - Break repetitive parallel structures
@@ -40,6 +43,7 @@ Rules:
 - Style: ${styleMap[style] || 'natural and fluent'}
 - Output ONLY the rewritten text, no explanations or preamble`
     : `Ты профессиональный редактор по устранению признаков ИИ-текста. Перепиши текст так, чтобы он звучал как живой человек.
+
 Правила:
 - Убери шаблонные фразы ИИ ("Следует отметить", "Таким образом", "В заключение" и т.д.)
 - Разбей однообразные параллельные конструкции
@@ -67,6 +71,7 @@ Rules:
 
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content;
+
     if (!result) {
       return { statusCode: 500, body: JSON.stringify({ error: 'No result from API' }) };
     }
