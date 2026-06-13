@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smartypath — Professional AI Text Humanization</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+  :root{
+    --bg:#F7F5F0;--bg2:#EFECE5;--bg3:#E8E4DB;
+    --ink:#1A1814;--ink2:#2D2A24;--ink3:#4A4640;
+    --blue:#1B3A6B;--blue-dim:#15305A;--blue-light:#E8EDF5;
+    --gold:#8B6914;--gold-light:#F5EDD6;
+    --red:#8B1A1A;--red-light:#F5E8E8;
+    --green:#1A5C2A;--green-light:#E8F5EC;
+    --border:#D4CEBF;--border2:#C8C2B0;
+    --muted:#6B6560;
+    --serif:'EB Garamond','Noto Serif SC',serif;
+    --sans:'Noto Sans SC',sans-serif;
+    --shadow:0 1px 4px rgba(26,24,20,.08);
+    --shadow2:0 4px 16px rgba(26,24,20,.1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;overflow-x:hidden;}
+
+  /* ── NAV ── */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:2px solid var(--blue);box-shadow:var(--shadow);padding:0 52px;display:flex;align-items:stretch;justify-content:space-between;height:60px;}
+  .nav-left{display:flex;align-items:center;gap:32px;}
+  .logo{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--blue);letter-spacing:.02em;text-decoration:none;line-height:1;}
+  .logo-tag{font-size:.62rem;color:var(--muted);font-family:var(--sans);font-weight:400;letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:1px;}
+  nav ul{list-style:none;display:flex;gap:0;align-items:stretch;height:100%;}
+  nav ul li{display:flex;align-items:center;}
+  nav ul a{text-decoration:none;color:var(--ink3);font-size:.84rem;font-weight:400;padding:0 14px;height:100%;display:flex;align-items:center;border-bottom:3px solid transparent;transition:all .2s;letter-spacing:.02em;}
+  nav ul a:hover{color:var(--blue);border-bottom-color:var(--blue);}
+  .nav-cta{background:var(--blue)!important;color:#fff!important;border-radius:3px;padding:8px 20px!important;height:auto!important;border-bottom:none!important;font-weight:600!important;font-size:.84rem!important;margin-left:8px;}
+  .nav-cta:hover{background:var(--blue-dim)!important;border-bottom:none!important;}
+  #nav-user-area{display:none;align-items:center;gap:8px;}
+  .user-name{font-size:.82rem;color:var(--muted);}
+  .btn-sm{background:transparent;border:1px solid var(--border2);color:var(--ink3);padding:5px 12px;border-radius:3px;font-size:.78rem;font-family:var(--sans);cursor:pointer;transition:all .2s;}
+  .btn-sm:hover{border-color:var(--blue);color:var(--blue);}
+
+  /* ── HERO ── */
+  #hero{padding:100px 52px 72px;background:linear-gradient(180deg,#fff 0%,var(--bg) 100%);border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;max-width:none;}
+  .hero-left{}
+  .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--blue-light);border:1px solid #C5D3E8;border-radius:2px;padding:5px 12px;font-size:.72rem;font-weight:600;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:24px;}
+  .hero-eyebrow::before{content:'';width:6px;height:6px;background:var(--blue);border-radius:50%;flex-shrink:0;}
+  h1{font-family:var(--serif);font-size:clamp(2.4rem,4vw,3.6rem);font-weight:600;line-height:1.15;color:var(--ink);margin-bottom:20px;letter-spacing:-.01em;}
+  h1 em{font-style:italic;color:var(--blue);}
+  .hero-desc{font-size:1rem;color:var(--ink3);line-height:1.8;margin-bottom:32px;max-width:520px;}
+  .hero-desc strong{color:var(--ink);font-weight:600;}
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .btn-primary{background:var(--blue);color:#fff;border:none;padding:12px 32px;border-radius:3px;font-weight:600;font-size:.93rem;font-family:var(--sans);cursor:pointer;transition:all .2s;letter-spacing:.02em;}
+  .btn-primary:hover{background:var(--blue-dim);box-shadow:0 4px 12px rgba(27,58,107,.25);}
+  .btn-ghost{background:transparent;color:var(--blue);border:1px solid var(--blue);padding:12px 32px;border-radius:3px;font-weight:400;font-size:.93rem;font-family:var(--sans);cursor:pointer;transition:all .2s;}
+  .btn-ghost:hover{background:var(--blue-light);}
+
+  /* HERO RIGHT — compare */
+  .hero-compare{background:#fff;border:1px solid var(--border);border-radius:4px;box-shadow:var(--shadow2);overflow:hidden;}
+  .hc-head{background:var(--blue);color:#fff;padding:12px 18px;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+  .hc-body{padding:20px 18px;display:flex;flex-direction:column;gap:14px;}
+  .hc-block{padding:14px 16px;border-radius:3px;font-size:.88rem;line-height:1.75;}
+  .hc-block .lbl{font-size:.67rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px;display:block;}
+  .hc-ai{background:var(--red-light);border-left:3px solid var(--red);}
+  .hc-ai .lbl{color:var(--red);}
+  .hc-ai p{color:#6B3333;}
+  .hc-human{background:var(--green-light);border-left:3px solid var(--green);}
+  .hc-human .lbl{color:var(--green);}
+  .hc-human p{color:var(--ink);}
+  .hc-arrow{text-align:center;font-size:.78rem;color:var(--muted);padding:2px 0;}
+
+  /* ── STATS BAR ── */
+  .stats-bar{background:var(--blue);color:#fff;padding:20px 52px;display:flex;justify-content:center;gap:64px;flex-wrap:wrap;}
+  .stat-item{text-align:center;}
+  .stat-num{font-family:var(--serif);font-size:2rem;font-weight:600;display:block;margin-bottom:2px;}
+  .stat-label{font-size:.72rem;opacity:.75;letter-spacing:.06em;text-transform:uppercase;}
+
+  /* ── SECTIONS ── */
+  section{padding:80px 52px;}
+  .sec-head{text-align:center;margin-bottom:52px;}
+  .sec-rule{width:48px;height:3px;background:var(--blue);margin:0 auto 18px;border-radius:1px;}
+  .sec-eye{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:10px;font-weight:600;}
+  h2{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:600;line-height:1.2;margin-bottom:10px;color:var(--ink);}
+  .sec-sub{color:var(--muted);max-width:540px;margin:0 auto;font-size:.93rem;line-height:1.75;}
+
+  /* ── WHY ── */
+  #why{background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;max-width:980px;margin:0 auto;align-items:start;}
+  .why-copy h3{font-family:var(--serif);font-size:1.7rem;font-weight:600;line-height:1.25;margin-bottom:18px;color:var(--ink);}
+  .why-copy h3 em{font-style:italic;color:var(--blue);}
+  .why-copy p{color:var(--ink3);line-height:1.8;margin-bottom:14px;font-size:.93rem;}
+  .why-copy .cite{font-size:.82rem;color:var(--muted);border-left:3px solid var(--border2);padding-left:12px;margin-top:20px;font-style:italic;line-height:1.6;}
+
+  /* ── HOW ── */
+  #how{background:var(--bg);}
+  .steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:980px;margin:0 auto;border:1px solid var(--border);background:var(--border);}
+  .step{background:#fff;padding:32px 24px;}
+  .step-n{font-family:var(--serif);font-size:2.4rem;font-weight:600;color:var(--blue-light);border-left:3px solid var(--blue);padding-left:10px;line-height:1;margin-bottom:16px;display:block;}
+  .step-icon{font-size:1.3rem;margin-bottom:10px;}
+  .step h3{font-size:.93rem;font-weight:600;margin-bottom:7px;color:var(--ink);}
+  .step p{font-size:.82rem;color:var(--muted);line-height:1.65;}
+
+  /* ── FIX ── */
+  #fix{background:#fff;border-top:1px solid var(--border);}
+  .fix-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;max-width:1000px;margin:0 auto;background:var(--border);border:1px solid var(--border);}
+  .fix-card{background:#fff;padding:28px 24px;}
+  .fix-icon{font-size:1.1rem;margin-bottom:10px;}
+  .fix-card h3{font-size:.93rem;font-weight:600;margin-bottom:7px;color:var(--ink);}
+  .fix-card p{font-size:.82rem;color:var(--muted);line-height:1.65;}
+
+  /* ── LANGS ── */
+  #langs{background:var(--bg2);border-top:1px solid var(--border);}
+  .lang-box{max-width:700px;margin:0 auto;background:#fff;border:1px solid var(--border);padding:48px 40px;text-align:center;box-shadow:var(--shadow);}
+  .lang-box h3{font-family:var(--serif);font-size:1.6rem;margin-bottom:12px;color:var(--ink);}
+  .lang-box .desc{color:var(--muted);font-size:.92rem;line-height:1.8;max-width:460px;margin:0 auto 28px;}
+  .lang-cards{display:flex;justify-content:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+  .lang-card{background:var(--bg);border:1px solid var(--border);padding:20px 32px;text-align:center;flex:1;min-width:130px;max-width:180px;}
+  .lang-flag{font-size:2rem;display:block;margin-bottom:7px;}
+  .lang-name{font-weight:600;font-size:.93rem;color:var(--ink);}
+  .lang-sub{font-size:.76rem;color:var(--muted);margin-top:2px;}
+  .warning-strip{display:inline-flex;align-items:center;gap:8px;background:var(--red-light);border:1px solid #D4AAAA;padding:10px 18px;font-size:.82rem;color:var(--red);}
+
+  /* ── NEWS ── */
+  #news{background:#fff;border-top:1px solid var(--border);}
+  .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1000px;margin:0 auto;}
+  .news-card{background:var(--bg);border:1px solid var(--border);transition:box-shadow .2s;cursor:pointer;}
+  .news-card:hover{box-shadow:var(--shadow2);}
+  .news-thumb{width:100%;height:160px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:2.5rem;border-bottom:1px solid var(--border);}
+  .news-body{padding:20px;}
+  .news-tag{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;display:block;}
+  .news-title{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:8px;}
+  .news-excerpt{font-size:.82rem;color:var(--muted);line-height:1.65;margin-bottom:12px;}
+  .news-meta{font-size:.74rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+  .news-meta span{color:var(--border2);}
+  .news-empty{text-align:center;padding:48px;color:var(--muted);font-size:.9rem;grid-column:1/-1;}
+
+  /* NEWS DETAIL */
+  #news-detail-page{display:none;min-height:100vh;padding:90px 52px 80px;background:var(--bg);}
+  .nd-wrap{max-width:720px;margin:0 auto;}
+  .nd-back{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--blue);cursor:pointer;margin-bottom:28px;background:none;border:none;font-family:var(--sans);padding:0;}
+  .nd-back:hover{text-decoration:underline;}
+  .nd-tag{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:block;}
+  .nd-title{font-family:var(--serif);font-size:2.2rem;font-weight:600;line-height:1.2;color:var(--ink);margin-bottom:12px;}
+  .nd-meta{font-size:.8rem;color:var(--muted);margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+  .nd-content{font-size:.97rem;color:var(--ink3);line-height:1.9;}
+  .nd-content p{margin-bottom:16px;}
+
+  /* ── FREE ── */
+  #free{background:var(--bg2);border-top:1px solid var(--border);}
+  .plan-wrap{max-width:480px;margin:0 auto;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow2);padding:48px 40px;text-align:center;position:relative;}
+  .plan-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 18px;white-space:nowrap;}
+  .plan-price{font-family:var(--serif);font-size:5rem;font-weight:600;line-height:1;color:var(--blue);margin:18px 0 6px;}
+  .plan-period{font-size:.82rem;color:var(--muted);margin-bottom:28px;}
+  .plan-list{list-style:none;text-align:left;margin-bottom:32px;}
+  .plan-list li{padding:10px 0;border-bottom:1px solid var(--border);font-size:.9rem;color:var(--ink3);display:flex;align-items:flex-start;gap:10px;line-height:1.5;}
+  .plan-list li:last-child{border-bottom:none;}
+  .ck{color:var(--green);flex-shrink:0;font-weight:700;}
+
+  /* ── FAQ ── */
+  #faq{background:#fff;border-top:1px solid var(--border);}
+  .faq-list{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:0;border:1px solid var(--border);}
+  .faq-item{border-bottom:1px solid var(--border);}
+  .faq-item:last-child{border-bottom:none;}
+  .faq-q{width:100%;background:none;border:none;cursor:pointer;padding:18px 22px;text-align:left;color:var(--ink);font-size:.92rem;font-weight:500;font-family:var(--sans);display:flex;justify-content:space-between;align-items:center;gap:12px;transition:background .15s;}
+  .faq-q:hover{background:var(--bg);}
+  .faq-arrow{color:var(--blue);font-size:.9rem;transition:transform .25s;flex-shrink:0;}
+  .faq-a{display:none;padding:0 22px 18px;font-size:.87rem;color:var(--muted);line-height:1.75;}
+  .faq-item.open .faq-a{display:block;}
+  .faq-item.open .faq-q{background:var(--bg);}
+  .faq-item.open .faq-arrow{transform:rotate(180deg);}
+
+  /* ── INNER PAGES ── */
+  .inner-page{display:none;min-height:100vh;padding:90px 52px 80px;background:var(--bg);}
+  .inner-wrap{max-width:760px;margin:0 auto;}
+  .inner-wrap h2{font-family:var(--serif);font-size:2rem;margin-bottom:6px;color:var(--ink);}
+  .inner-wrap .sub{color:var(--muted);font-size:.88rem;margin-bottom:28px;line-height:1.7;}
+  .form-card{background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);padding:36px;}
+  .field{margin-bottom:18px;}
+  .field label{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px;font-weight:500;}
+  .field input,.field select,.field textarea{width:100%;background:#fff;border:1px solid var(--border2);padding:10px 13px;color:var(--ink);font-size:.9rem;font-family:var(--sans);outline:none;transition:border-color .2s;resize:vertical;appearance:none;border-radius:2px;}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,58,107,.08);}
+  .field textarea{min-height:180px;line-height:1.7;}
+  .field input::placeholder,.field textarea::placeholder{color:#B0A898;}
+  .word-count{font-size:.74rem;color:var(--muted);text-align:right;margin-top:4px;}
+  .word-count .over{color:var(--red);}
+  .upload-zone{position:relative;border:2px dashed var(--border2);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);}
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--blue);background:var(--blue-light);}
+  .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .upload-zone .u-icon{font-size:1.8rem;margin-bottom:8px;}
+  .upload-zone p{font-size:.85rem;color:var(--muted);}
+  .upload-zone strong{color:var(--blue);}
+  .file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .file-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:1px solid var(--border);padding:9px 13px;font-size:.83rem;}
+  .file-item .fname{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;}
+  .file-item .fsize{color:var(--muted);font-size:.76rem;flex-shrink:0;}
+  .file-item .fdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:0 0 0 10px;transition:color .2s;flex-shrink:0;}
+  .file-item .fdel:hover{color:var(--red);}
+  .form-note{font-size:.78rem;color:var(--muted);margin-top:12px;line-height:1.65;}
+  .form-note strong{color:var(--blue);}
+
+  /* ORDERS */
+  .order-card{background:#fff;border:1px solid var(--border);padding:22px;margin-bottom:12px;transition:box-shadow .2s;}
+  .order-card:hover{box-shadow:var(--shadow);}
+  .order-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;flex-wrap:wrap;gap:8px;}
+  .order-title{font-weight:600;font-size:.93rem;color:var(--ink);}
+  .order-meta{font-size:.76rem;color:var(--muted);}
+  .order-status{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;}
+  .status-pending{background:var(--gold-light);color:var(--gold);}
+  .status-done{background:var(--green-light);color:var(--green);}
+  .order-preview{font-size:.83rem;color:var(--muted);line-height:1.6;}
+  .empty-state{text-align:center;padding:56px 24px;color:var(--muted);}
+  .empty-icon{font-size:2rem;margin-bottom:12px;}
+
+  /* VERIFY BANNER */
+  #verify-banner{display:none;background:var(--gold-light);border-bottom:1px solid #D4B870;padding:10px 52px;font-size:.83rem;color:var(--gold);text-align:center;}
+  #verify-banner a{color:var(--blue);cursor:pointer;font-weight:600;text-decoration:underline;}
+
+  /* MODAL */
+  .overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(26,24,20,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+  .overlay.active{display:flex;}
+  .modal{background:#fff;border:1px solid var(--border);box-shadow:0 20px 60px rgba(26,24,20,.2);padding:40px 36px;width:100%;max-width:420px;position:relative;animation:slideUp .25s ease;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .modal-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;transition:color .2s;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-logo{font-family:var(--serif);font-size:1.1rem;color:var(--blue);margin-bottom:4px;font-weight:600;}
+  .modal h2{font-family:var(--serif);font-size:1.5rem;margin-bottom:4px;color:var(--ink);}
+  .modal-sub{font-size:.82rem;color:var(--muted);margin-bottom:22px;}
+  .tabs{display:flex;margin-bottom:20px;border-bottom:2px solid var(--border);}
+  .tab{background:none;border:none;cursor:pointer;padding:8px 20px;font-size:.86rem;color:var(--muted);font-family:var(--sans);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+  .form-group{margin-bottom:14px;}
+  .form-group label{font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px;font-weight:500;}
+  .form-group input,.form-group select{width:100%;background:#fff;border:1px solid var(--border2);padding:10px 13px;color:var(--ink);font-size:.88rem;font-family:var(--sans);outline:none;transition:all .2s;appearance:none;border-radius:2px;}
+  .form-group input:focus,.form-group select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,58,107,.08);}
+  .form-group input::placeholder{color:#B0A898;}
+  .form-submit{width:100%;margin-top:4px;padding:12px;background:var(--blue);color:#fff;border:none;font-size:.93rem;font-weight:600;font-family:var(--sans);cursor:pointer;transition:background .2s;border-radius:2px;}
+  .form-submit:hover{background:var(--blue-dim);}
+  .form-note2{font-size:.73rem;color:var(--muted);text-align:center;margin-top:10px;}
+  .form-note2 a{color:var(--blue);text-decoration:none;}
+  .success-msg{display:none;text-align:center;padding:16px 0;}
+  .success-msg .check{font-size:2.5rem;margin-bottom:10px;}
+  .success-msg h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:7px;color:var(--ink);}
+  .success-msg p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:24px;right:24px;z-index:999;background:var(--ink);color:#fff;border-radius:3px;padding:12px 18px;font-size:.85rem;display:none;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.2);}
+
+  /* FOOTER */
+  footer{background:var(--ink);color:rgba(255,255,255,.7);padding:48px 52px 32px;}
+  .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:36px;}
+  .footer-brand .f-logo{font-family:var(--serif);font-size:1.3rem;color:#fff;font-weight:600;margin-bottom:8px;}
+  .footer-brand p{font-size:.82rem;line-height:1.7;max-width:280px;}
+  .footer-col h4{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:14px;}
+  .footer-col a{display:block;color:rgba(255,255,255,.65);text-decoration:none;font-size:.83rem;margin-bottom:8px;transition:color .2s;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .footer-copy{font-size:.76rem;color:rgba(255,255,255,.4);}
+  .footer-langs{display:flex;gap:8px;}
+  .flang{font-size:.7rem;padding:3px 9px;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);}
+
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+  /* RESPONSIVE */
+  @media(max-width:960px){#hero{grid-template-columns:1fr;}.why-grid{grid-template-columns:1fr;}.steps-grid{grid-template-columns:1fr 1fr;}.fix-grid{grid-template-columns:1fr 1fr;}.news-grid{grid-template-columns:1fr 1fr;}.footer-top{grid-template-columns:1fr 1fr;}}
+  @media(max-width:640px){nav{padding:0 20px;}.hero-right{display:none;}#hero{padding:80px 20px 52px;}section{padding:56px 20px;}.stats-bar{gap:24px;padding:20px;}.steps-grid{grid-template-columns:1fr;}.fix-grid{grid-template-columns:1fr;}.news-grid{grid-template-columns:1fr;}.modal{padding:32px 20px;}footer{padding:36px 20px 24px;}.footer-top{grid-template-columns:1fr;}.inner-page{padding:80px 20px 60px;}.form-card{padding:22px;}.verify-banner{padding:10px 20px;}#verify-banner{padding:10px 20px;}}
+</style>
+</head>
+<body>
+
+<!-- VERIFY BANNER -->
+<div id="verify-banner">
+  📧 请验证你的邮箱以确保润色结果能正常送达。<a onclick="resendVerify()">重新发送验证邮件</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a class="logo" href="#" onclick="showPage('home')">Smartypath<span class="logo-tag">AI Text Humanization</span></a>
+    <ul id="nav-guest">
+      <li><a href="#why" onclick="showPage('home')">服务介绍</a></li>
+      <li><a href="#news" onclick="showPage('home')">最新资讯</a></li>
+      <li><a href="#free" onclick="showPage('home')">定价</a></li>
+      <li><a href="#" onclick="showPage('contact')">联系我们</a></li>
+      <li><a href="#" class="nav-cta" onclick="openModal('register')">免费注册</a></li>
+    </ul>
+  </div>
+  <div id="nav-user-area">
+    <span class="user-name" id="nav-username"></span>
+    <button class="btn-sm" onclick="showPage('submit')">提交文章</button>
+    <button class="btn-sm" onclick="showPage('orders')">我的订单</button>
+    <button class="btn-sm" onclick="showPage('contact')">联系我们</button>
+    <button class="btn-sm" onclick="logout()">退出</button>
+  </div>
+</nav>
+
+<!-- ══════ HOME ══════ -->
+<div id="home-page">
+
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">仅支持 English & Русский 润色</div>
+    <h1>AI 生成的文字，<br>经由<em>真人编辑</em>重写。</h1>
+    <p class="hero-desc">
+      AI 检测器越来越精准。用另一个 AI 工具"去AI化"，只是把同样的语言模式重新排列。<br>
+      Smartypath 的<strong>真人专业编辑</strong>从头重写你的英文或俄文文章，从根本上消除 AI 痕迹。
+    </p>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="openModal('register')">免费开始使用</button>
+      <button class="btn-ghost" onclick="showPage('contact')">上传文件咨询</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-compare">
+      <div class="hc-head">文本对比示例 · English</div>
+      <div class="hc-body">
+        <div class="hc-block hc-ai">
+          <span class="lbl">AI 原文</span>
+          <p>Furthermore, it is important to note that this multifaceted phenomenon encompasses a variety of interconnected dimensions that merit careful consideration.</p>
+        </div>
+        <div class="hc-arrow">↓ Smartypath 真人编辑重写</div>
+        <div class="hc-block hc-human">
+          <span class="lbl">润色后</span>
+          <p>It's a complex issue — but that's exactly what makes it worth examining closely. Let me walk you through it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-num" data-target="12000">0</span><span class="stat-label">注册用户</span></div>
+  <div class="stat-item"><span class="stat-num" data-target="99">0</span><span class="stat-label">AI检测通过率 %</span></div>
+  <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">真人编辑完成</span></div>
+  <div class="stat-item"><span class="stat-num">24h</span><span class="stat-label">平均交付时间</span></div>
+</div>
+
+<section id="why" style="background:#fff;">
+  <div class="why-grid">
+    <div class="why-copy">
+      <h3>为什么 AI 改 AI<br><em>效果有限？</em></h3>
+      <p>市面上大多数"去AI化"工具本质上是用另一个语言模型重新排列相同的语言模式。AI 检测器的训练数据中包含了这类改写的输出，仍然能够识别。</p>
+      <p>Smartypath 采取完全不同的路径：真人编辑通读原文、理解语境，用地道的英语或俄语从头重写——还原真实的人类写作节奏、语气和个人风格。</p>
+      <p>结果不仅能通过主流 AI 检测工具，读起来也真正具有人的温度。</p>
+      <div class="cite">我们的编辑均为英语或俄语母语级专业人士，具备学术写作、商务文案及创意写作背景。</div>
+    </div>
+    <div>
+      <div style="background:var(--bg);border:1px solid var(--border);padding:28px;">
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;">我们处理的 AI 痕迹类型</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.87rem;"><span style="color:var(--green);font-weight:700;margin-top:1px;">✓</span><span><strong style="color:var(--ink);">重复句式结构</strong><br><span style="color:var(--muted);font-size:.81rem;">打破 AI 惯用的排比与整齐节奏</span></span></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.87rem;"><span style="color:var(--green);font-weight:700;margin-top:1px;">✓</span><span><strong style="color:var(--ink);">空洞套话废语</strong><br><span style="color:var(--muted);font-size:.81rem;">"Furthermore…""It is worth noting…" 等</span></span></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.87rem;"><span style="color:var(--green);font-weight:700;margin-top:1px;">✓</span><span><strong style="color:var(--ink);">不合语境的正式感</strong><br><span style="color:var(--muted);font-size:.81rem;">调整语气至符合实际受众和场合</span></span></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.87rem;"><span style="color:var(--green);font-weight:700;margin-top:1px;">✓</span><span><strong style="color:var(--ink);">千篇一律的用词</strong><br><span style="color:var(--muted);font-size:.81rem;">引入多样性、精准度与个人声音</span></span></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.87rem;"><span style="color:var(--green);font-weight:700;margin-top:1px;">✓</span><span><strong style="color:var(--ink);">平均一致的段落长度</strong><br><span style="color:var(--muted);font-size:.81rem;">还原真实写作中的节奏起伏</span></span></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.87rem;"><span style="color:var(--green);font-weight:700;margin-top:1px;">✓</span><span><strong style="color:var(--ink);">缺乏情感温度</strong><br><span style="color:var(--muted);font-size:.81rem;">加入停顿、强调与自然反应</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="background:var(--bg);">
+  <div class="sec-head"><div class="sec-rule"></div><span class="sec-eye">工作流程</span><h2>四步完成全流程</h2><p class="sec-sub">从提交到收取润色成品，流程简洁透明。</p></div>
+  <div class="steps-grid">
+    <div class="step"><span class="step-n">01</span><div class="step-icon">📝</div><h3>免费注册账号</h3><p>一分钟完成注册，无需信用卡，立即可用。</p></div>
+    <div class="step"><span class="step-n">02</span><div class="step-icon">📤</div><h3>提交英文或俄文文章</h3><p>粘贴文字，或通过"联系我们"上传 Word/PDF 文件。</p></div>
+    <div class="step"><span class="step-n">03</span><div class="step-icon">✍️</div><h3>真人编辑重写</h3><p>专业编辑通读原文，以地道语言从头重写，非 AI 处理。</p></div>
+    <div class="step"><span class="step-n">04</span><div class="step-icon">📧</div><h3>邮件接收成品</h3><p>润色完成后收到邮件通知，登录后台查看下载成品。</p></div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section id="news" style="background:#fff;border-top:1px solid var(--border);">
+  <div class="sec-head"><div class="sec-rule"></div><span class="sec-eye">最新资讯</span><h2>研究与行业动态</h2><p class="sec-sub">关于 AI 写作检测、语言编辑实践与行业最新动态。</p></div>
+  <div class="news-grid" id="news-grid">
+    <div class="news-empty">暂无文章，敬请期待。</div>
+  </div>
+</section>
+
+<section id="langs" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="sec-head"><div class="sec-rule"></div><span class="sec-eye">服务语言</span><h2>仅支持两种语言</h2></div>
+  <div class="lang-box">
+    <h3>专注即是质量保障</h3>
+    <p class="desc">我们的编辑团队专注于英语和俄语，并在这两门语言上具备母语级专业能力。专注于两门语言，才能真正保证质量。</p>
+    <div class="lang-cards">
+      <div class="lang-card"><span class="lang-flag">🇬🇧🇺🇸</span><div class="lang-name">English</div><div class="lang-sub">英式 & 美式</div></div>
+      <div class="lang-card"><span class="lang-flag">🇷🇺</span><div class="lang-name">Русский</div><div class="lang-sub">俄语</div></div>
+    </div>
+    <div class="warning-strip">⚠️ &nbsp; 提交其他语言（包括中文）的文章将不予受理</div>
+  </div>
+</section>
+
+<section id="free" style="background:var(--bg);border-top:1px solid var(--border);">
+  <div class="sec-head"><div class="sec-rule"></div><span class="sec-eye">定价方案</span><h2>两种服务，按需选择</h2><p class="sec-sub">AI 快速润色永久免费，人工精品润色按需报价，无隐藏费用。</p></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:760px;margin:0 auto;">
+    <!-- FREE PLAN -->
+    <div style="background:#fff;border:1px solid var(--border);padding:36px 28px;text-align:center;position:relative;">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">AI 快速润色</div>
+      <div style="font-family:var(--serif);font-size:4rem;font-weight:600;color:var(--blue);line-height:1;margin-bottom:6px;">¥0</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:24px;">永久免费</div>
+      <ul style="list-style:none;text-align:left;margin-bottom:28px;">
+        <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> DeepSeek AI 自动处理</li>
+        <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> 结果即时返回</li>
+        <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> 每次最多 1,000 词</li>
+        <li style="padding:8px 0;font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> 无需注册登录</li>
+      </ul>
+      <button class="btn-primary" style="width:100%;padding:11px;" onclick="showPage('submit');switchMode('ai')">立即免费使用</button>
+    </div>
+    <!-- HUMAN PLAN -->
+    <div style="background:#fff;border:2px solid var(--blue);padding:36px 28px;text-align:center;position:relative;box-shadow:var(--shadow2);">
+      <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 18px;white-space:nowrap;">推荐 · 效果最佳</div>
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">人工精品润色</div>
+      <div style="font-family:var(--serif);font-size:2.4rem;font-weight:600;color:var(--blue);line-height:1;margin-bottom:6px;">按需报价</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:24px;">根据字数和复杂度定价</div>
+      <ul style="list-style:none;text-align:left;margin-bottom:28px;">
+        <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> 母语级真人编辑</li>
+        <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> 通过 Turnitin / GPTZero</li>
+        <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> 24 小时内交付</li>
+        <li style="padding:8px 0;font-size:.87rem;color:var(--ink3);display:flex;gap:8px;"><span style="color:var(--green);font-weight:700;">✓</span> 先报价后付款</li>
+      </ul>
+      <button class="btn-primary" style="width:100%;padding:11px;" onclick="showPage('submit');switchMode('human')">提交申请获取报价</button>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="background:#fff;border-top:1px solid var(--border);">
+  <div class="sec-head"><div class="sec-rule"></div><span class="sec-eye">常见问题</span><h2>你可能想了解的</h2></div>
+  <div class="faq-list">
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">为什么只支持英语和俄语？<span class="faq-arrow">↓</span></button><div class="faq-a">我们的编辑在这两门语言上具备母语级专业能力。贸然扩展到其他语言只会稀释质量标准，这与我们的核心承诺相悖。</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">"真人编辑"是真的吗？<span class="faq-arrow">↓</span></button><div class="faq-a">是的，每篇文章都由真实的人工编辑阅读并重写，不经过任何 AI 处理环节。这正是我们与其他工具的本质区别。</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">润色后能通过哪些 AI 检测工具？<span class="faq-arrow">↓</span></button><div class="faq-a">我们的目标是通过主流检测工具，包括 Turnitin、GPTZero、Originality.ai、ZeroGPT 等。由于是真人重写，语言模式与真实人类写作高度一致。</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">通常需要多长时间？<span class="faq-arrow">↓</span></button><div class="faq-a">大多数文章在 24 小时内完成。润色完成后你会收到邮件通知，登录后即可查看并下载。</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">我的文章内容会被存储吗？<span class="faq-arrow">↓</span></button><div class="faq-a">文章仅在编辑处理期间临时存储，交付完成后立即从服务器删除，不用于任何训练或存档目的。</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="f-logo">Smartypath</div>
+      <p>专业 AI 文章真人润色服务。仅支持英语与俄语。真人编辑，真实效果。</p>
+    </div>
+    <div class="footer-col">
+      <h4>服务</h4>
+      <a href="#" onclick="showPage('submit')">提交润色任务</a>
+      <a href="#" onclick="showPage('contact')">上传文件咨询</a>
+      <a href="#free" onclick="showPage('home')">定价方案</a>
+    </div>
+    <div class="footer-col">
+      <h4>关于</h4>
+      <a href="#news" onclick="showPage('home')">最新资讯</a>
+      <a href="#">使用条款</a>
+      <a href="#">隐私政策</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Smartypath · All rights reserved.</div>
+    <div class="footer-langs"><span class="flang">EN</span><span class="flang">RU</span></div>
+  </div>
+</footer>
+</div><!-- /home-page -->
+
+<!-- NEWS DETAIL PAGE -->
+<div id="news-detail-page">
+  <div class="nd-wrap">
+    <button class="nd-back" onclick="showPage('home');setTimeout(()=>document.getElementById('news').scrollIntoView(),100)">← 返回资讯列表</button>
+    <span class="nd-tag" id="nd-tag"></span>
+    <h1 class="nd-title" id="nd-title"></h1>
+    <div class="nd-meta" id="nd-meta"></div>
+    <div class="nd-content" id="nd-content"></div>
+  </div>
+</div>
+
+<!-- SUBMIT PAGE -->
+<div id="submit-page" class="inner-page">
+  <div class="inner-wrap" style="max-width:820px;">
+    <h2>润色服务</h2>
+    <p class="sub">选择适合你的服务模式。AI 快速润色免费即时完成，人工精品润色由专业编辑处理，收费按需报价。</p>
+
+    <!-- MODE TABS -->
+    <div style="display:flex;border:1px solid var(--border);background:#fff;margin-bottom:24px;overflow:hidden;">
+      <button id="mode-tab-ai" onclick="switchMode('ai')" style="flex:1;padding:16px;border:none;background:var(--blue);color:#fff;font-family:var(--sans);font-size:.93rem;font-weight:600;cursor:pointer;transition:all .2s;border-right:1px solid var(--border);">
+        ⚡ AI 快速润色 <span style="font-size:.75rem;opacity:.8;display:block;font-weight:400;margin-top:2px;">免费 · 即时出结果</span>
+      </button>
+      <button id="mode-tab-human" onclick="switchMode('human')" style="flex:1;padding:16px;border:none;background:#fff;color:var(--ink3);font-family:var(--sans);font-size:.93rem;font-weight:600;cursor:pointer;transition:all .2s;">
+        ✍️ 人工精品润色 <span style="font-size:.75rem;color:var(--muted);display:block;font-weight:400;margin-top:2px;">收费 · 真人编辑 · 24h交付</span>
+      </button>
+    </div>
+
+    <!-- AI MODE -->
+    <div id="mode-ai">
+      <div class="form-card">
+        <div style="background:var(--blue-light);border:1px solid #C5D3E8;padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:var(--blue);line-height:1.6;">
+          <strong>说明：</strong> AI 快速润色使用 DeepSeek 大模型自动处理，去除常见 AI 写作特征，结果即时返回。无需登录，完全免费。效果优于普通 AI 工具，但不及真人编辑。
+        </div>
+        <div class="field">
+          <label>文章语言 *</label>
+          <select id="ai-lang">
+            <option value="">请选择语言</option>
+            <option value="English">🇬🇧 English（英语）</option>
+            <option value="Russian">🇷🇺 Русский（俄语）</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>润色风格</label>
+          <select id="ai-style">
+            <option value="natural">自然流畅（通用）</option>
+            <option value="academic">学术 / 论文</option>
+            <option value="business">商务 / 职场</option>
+            <option value="casual">轻松 / 博客</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>文章原文 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（最多 1,000 词）</span></label>
+          <textarea id="ai-text" placeholder="在此粘贴你的 AI 生成文章..." oninput="updateAiWordCount()" style="min-height:200px;"></textarea>
+          <div class="word-count"><span id="ai-wc">0</span> / 1,000 词</div>
+        </div>
+        <button class="btn-primary" id="ai-submit-btn" style="width:100%;padding:13px;" onclick="runAiPolish()">⚡ 立即润色</button>
+
+        <!-- RESULT -->
+        <div id="ai-result-box" style="display:none;margin-top:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:.78rem;font-weight:600;color:var(--green);letter-spacing:.08em;text-transform:uppercase;">✓ 润色完成</span>
+            <button onclick="copyAiResult()" style="background:none;border:1px solid var(--border2);padding:5px 14px;font-size:.78rem;color:var(--blue);cursor:pointer;font-family:var(--sans);border-radius:2px;">复制结果</button>
+          </div>
+          <div id="ai-result-text" style="background:var(--bg);border:1px solid var(--border);padding:18px;font-size:.9rem;line-height:1.8;color:var(--ink);white-space:pre-wrap;max-height:400px;overflow-y:auto;"></div>
+          <div style="margin-top:14px;padding:12px 16px;background:var(--gold-light);border:1px solid #D4B870;font-size:.82rem;color:var(--gold);line-height:1.6;">
+            💡 需要更高质量、能通过 Turnitin 等严格检测的润色？试试我们的 <a href="#" onclick="switchMode('human')" style="color:var(--blue);font-weight:600;">人工精品润色</a>。
+          </div>
+        </div>
+
+        <!-- LOADING -->
+        <div id="ai-loading" style="display:none;text-align:center;padding:32px;color:var(--muted);font-size:.9rem;">
+          <div style="font-size:1.5rem;margin-bottom:10px;animation:spin 1.5s linear infinite;display:inline-block;">⚙️</div>
+          <div>DeepSeek 正在处理中，请稍候…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUMAN MODE -->
+    <div id="mode-human" style="display:none;">
+      <div class="form-card">
+        <div style="background:var(--blue-light);border:1px solid #C5D3E8;padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:var(--blue);line-height:1.6;">
+          <strong>说明：</strong> 提交后编辑会通过邮件与你联系，根据文章长度和复杂度给出报价。确认后 24 小时内完成交付。
+        </div>
+        <div class="field"><label>文章语言 *</label><select id="sub-lang"><option value="">请选择语言</option><option value="English">🇬🇧 English（英语）</option><option value="Russian">🇷🇺 Русский（俄语）</option></select></div>
+        <div class="field"><label>润色风格</label><select id="sub-style"><option value="自然流畅">自然流畅（通用）</option><option value="学术严谨">学术 / 论文</option><option value="商务专业">商务 / 职场</option><option value="轻松口语">轻松 / 博客</option><option value="创意文学">创意 / 文学</option></select></div>
+        <div class="field"><label>联系邮箱 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（编辑将通过此邮箱与你联系报价）</span></label><input type="email" id="sub-email" placeholder="your@email.com"></div>
+        <div class="field"><label>备注说明（可选）</label><input type="text" id="sub-note" placeholder="例如：保留所有引用格式；不要使用第一人称…"></div>
+        <div class="field">
+          <label>文章原文 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（字数越多报价越准确）</span></label>
+          <textarea id="sub-text" placeholder="在此粘贴你的 AI 生成文章..." oninput="updateWordCount()" style="min-height:200px;"></textarea>
+          <div class="word-count"><span id="wc-display">0</span> 词</div>
+        </div>
+        <button class="btn-primary" style="width:100%;padding:13px;background:var(--ink);" onclick="submitHumanOrder()">✍️ 提交人工润色申请</button>
+        <p class="form-note">提交后编辑会在 <strong>24 小时内</strong>通过邮件回复报价，确认后开始处理。无需先付款。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDERS PAGE -->
+<div id="orders-page" class="inner-page">
+  <div class="inner-wrap" style="max-width:860px;">
+    <h2>我的订单</h2>
+    <p class="sub">查看所有提交的润色任务及当前状态。</p>
+    <div id="orders-list"></div>
+  </div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div id="contact-page" class="inner-page">
+  <div class="inner-wrap">
+    <h2>联系我们 / 上传文件</h2>
+    <p class="sub">如有 Word、PDF 等格式文件需要润色，或有特殊需求，请填写以下表单并上传文件。我们会在 <strong style="color:var(--blue);">24 小时内</strong>通过邮件回复。</p>
+    <div class="form-card">
+      <div class="field"><label>你的姓名 *</label><input type="text" id="ct-name" placeholder="你的名字或昵称"></div>
+      <div class="field"><label>邮箱地址 *</label><input type="email" id="ct-email" placeholder="your@email.com"></div>
+      <div class="field"><label>文章语言 *</label><select id="ct-lang"><option value="">请选择</option><option value="English">🇬🇧 English（英语）</option><option value="Russian">🇷🇺 Русский（俄语）</option></select></div>
+      <div class="field"><label>润色风格</label><select id="ct-style"><option value="自然流畅">自然流畅（通用）</option><option value="学术严谨">学术 / 论文</option><option value="商务专业">商务 / 职场</option><option value="轻松口语">轻松 / 博客</option><option value="创意文学">创意 / 文学</option></select></div>
+      <div class="field"><label>备注说明（可选）</label><textarea id="ct-note" placeholder="请描述你的需求…" style="min-height:90px;"></textarea></div>
+      <div class="field">
+        <label>上传文件 <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（.doc .docx .pdf .txt，最多 3 个，单个 ≤ 10MB）</span></label>
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="file-input" accept=".doc,.docx,.pdf,.txt" multiple onchange="handleFiles(this.files)">
+          <div class="u-icon">📎</div>
+          <p><strong>点击选择文件</strong>，或将文件拖拽到此处</p>
+          <p style="font-size:.75rem;margin-top:4px;color:#B0A898;">.doc · .docx · .pdf · .txt</p>
+        </div>
+        <div class="file-list" id="file-list"></div>
+      </div>
+      <button class="btn-primary" style="width:100%;padding:13px;" onclick="submitContact()">📤 提交咨询</button>
+      <p class="form-note">提交后系统将保存你的信息，我们会在 24 小时内通过邮件联系你确认报价和时间。</p>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="authOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-logo">Smartypath</div>
+    <h2>欢迎使用</h2>
+    <p class="modal-sub">免费注册，无需信用卡，每天 3,000 词润色额度</p>
+    <div class="tabs">
+      <button class="tab active" id="tabRegister" onclick="switchTab('register')">注册账号</button>
+      <button class="tab" id="tabLogin" onclick="switchTab('login')">登录</button>
+    </div>
+    <div id="formRegister">
+      <div class="form-group"><label>昵称</label><input type="text" placeholder="你的名字或昵称" id="regName"></div>
+      <div class="form-group"><label>邮箱地址</label><input type="email" placeholder="your@email.com" id="regEmail"></div>
+      <div class="form-group"><label>设置密码</label><input type="password" placeholder="至少 8 位字符" id="regPass"></div>
+      <div class="form-group"><label>润色语言偏好</label><select id="regLang"><option value="English">🇬🇧 English（英语）</option><option value="Russian">🇷🇺 Русский（俄语）</option></select></div>
+      <button class="form-submit" onclick="handleRegister()">创建免费账号</button>
+      <p class="form-note2">注册即代表同意 <a href="#">服务条款</a> 与 <a href="#">隐私政策</a></p>
+    </div>
+    <div id="formLogin" style="display:none">
+      <div class="form-group"><label>邮箱地址</label><input type="email" placeholder="your@email.com" id="loginEmail"></div>
+      <div class="form-group"><label>密码</label><input type="password" placeholder="输入密码" id="loginPass"></div>
+      <button class="form-submit" onclick="handleLogin()">登录</button>
+      <p class="form-note2"><a href="#">忘记密码？</a></p>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <div class="check">✓</div>
+      <h3>注册成功！</h3>
+      <p>欢迎加入 Smartypath。<br>你现在每天有 3,000 词的免费真人润色额度。<br><br><span style="color:var(--gold);font-size:.82rem;">📧 请查收验证邮件并完成邮箱验证。</span></p>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPA_URL='https://knskxinizwnkpawunftn.supabase.co';
+const SUPA_KEY='sb_publishable_AemNv1dP8JprYtPjTB0azA_alK9Qu_3';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+let currentUser=JSON.parse(localStorage.getItem('hp_user')||'null');
+let uploadedFiles=[], userOrders=[];
+let newsArticles=[];
+
+document.addEventListener('DOMContentLoaded',()=>{ updateNav(); animateCounters(); loadNews(); checkVerifyBanner(); });
+
+// ── NAV ──
+function updateNav(){
+  const g=document.getElementById('nav-guest'),u=document.getElementById('nav-user-area');
+  if(currentUser){g.style.display='none';u.style.display='flex';document.getElementById('nav-username').textContent=currentUser.name;}
+  else{g.style.display='flex';u.style.display='none';}
+}
+function logout(){currentUser=null;localStorage.removeItem('hp_user');updateNav();showPage('home');showToast('已退出登录');}
+
+// ── VERIFY BANNER ──
+function checkVerifyBanner(){
+  if(currentUser&&!currentUser.verified){
+    document.getElementById('verify-banner').style.display='block';
+  } else {
+    document.getElementById('verify-banner').style.display='none';
+  }
+}
+async function resendVerify(){ showToast('📧 验证邮件已重新发送至 '+currentUser?.email); }
+
+// ── PAGES ──
+const allPages=['home-page','submit-page','orders-page','contact-page','news-detail-page'];
+function showPage(page){
+  allPages.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  if(page==='home'){document.getElementById('home-page').style.display='block';}
+  else if(page==='submit'){document.getElementById('submit-page').style.display='block';window.scrollTo(0,0);}
+  else if(page==='orders'){if(!currentUser){openModal('login');return;}document.getElementById('orders-page').style.display='block';renderOrders();window.scrollTo(0,0);}
+  else if(page==='contact'){document.getElementById('contact-page').style.display='block';window.scrollTo(0,0);}
+  else if(page==='news-detail'){document.getElementById('news-detail-page').style.display='block';window.scrollTo(0,0);}
+}
+showPage('home');
+
+// ── NEWS ──
+async function loadNews(){
+  const {data}=await sb.from('news').select('*').eq('published',true).order('created_at',{ascending:false}).limit(6);
+  newsArticles=data||[];
+  renderNews();
+}
+function renderNews(){
+  const grid=document.getElementById('news-grid');
+  if(!newsArticles.length){grid.innerHTML='<div class="news-empty">暂无文章，敬请期待。</div>';return;}
+  grid.innerHTML=newsArticles.map(a=>`
+    <div class="news-card" onclick="openArticle('${a.id}')">
+      <div class="news-thumb">${a.emoji||'📄'}</div>
+      <div class="news-body">
+        <span class="news-tag">${a.category||'资讯'}</span>
+        <div class="news-title">${escHtml(a.title)}</div>
+        <div class="news-excerpt">${escHtml((a.excerpt||a.content||'').substring(0,100))}…</div>
+        <div class="news-meta">${new Date(a.created_at).toLocaleDateString('zh-CN')}<span>·</span>${a.author||'Smartypath 编辑团队'}</div>
+      </div>
+    </div>`).join('');
+}
+function openArticle(id){
+  const a=newsArticles.find(x=>x.id===id);if(!a)return;
+  document.getElementById('nd-tag').textContent=a.category||'资讯';
+  document.getElementById('nd-title').textContent=a.title;
+  document.getElementById('nd-meta').textContent=new Date(a.created_at).toLocaleDateString('zh-CN')+'  ·  '+(a.author||'Smartypath 编辑团队');
+  document.getElementById('nd-content').innerHTML=a.content_html||('<p>'+escHtml(a.content||'')+'</p>');
+  showPage('news-detail');
+}
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── DeepSeek via Netlify Function (API key hidden server-side) ──
+
+// ── MODE SWITCH ──
+function switchMode(mode){
+  const aiTab=document.getElementById('mode-tab-ai');
+  const huTab=document.getElementById('mode-tab-human');
+  const aiBox=document.getElementById('mode-ai');
+  const huBox=document.getElementById('mode-human');
+  if(!aiTab)return;
+  if(mode==='ai'){
+    aiTab.style.background='var(--blue)';aiTab.style.color='#fff';
+    huTab.style.background='#fff';huTab.style.color='var(--ink3)';
+    aiBox.style.display='block';huBox.style.display='none';
+  } else {
+    huTab.style.background='var(--blue)';huTab.style.color='#fff';
+    aiTab.style.background='#fff';aiTab.style.color='var(--ink3)';
+    aiBox.style.display='none';huBox.style.display='block';
+  }
+}
+
+// ── AI WORD COUNT ──
+function updateAiWordCount(){
+  const wc=countWords(document.getElementById('ai-text').value);
+  const el=document.getElementById('ai-wc');
+  if(el){el.textContent=wc;el.className=wc>1000?'over':'';}
+}
+
+// ── DEEPSEEK AI POLISH（通过后端代理，Key 不暴露）──
+async function runAiPolish(){
+  const lang=document.getElementById('ai-lang').value;
+  const style=document.getElementById('ai-style').value;
+  const text=document.getElementById('ai-text').value.trim();
+  if(!lang){showToast('⚠️ 请选择文章语言');return;}
+  if(!text){showToast('⚠️ 请粘贴文章内容');return;}
+  const wc=countWords(text);
+  if(wc>1000){showToast('⚠️ 免费 AI 润色最多 1,000 词，当前 '+wc+' 词');return;}
+
+  document.getElementById('ai-submit-btn').disabled=true;
+  document.getElementById('ai-submit-btn').textContent='处理中…';
+  document.getElementById('ai-loading').style.display='block';
+  document.getElementById('ai-result-box').style.display='none';
+
+  try {
+    const resp=await fetch('/.netlify/functions/deepseek',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text,lang,style})
+    });
+    const data=await resp.json();
+    if(!resp.ok||!data.result) throw new Error(data.error||'No result');
+    document.getElementById('ai-result-text').textContent=data.result;
+    document.getElementById('ai-result-box').style.display='block';
+    document.getElementById('ai-loading').style.display='none';
+    showToast('✅ AI 润色完成！');
+  } catch(err){
+    document.getElementById('ai-loading').style.display='none';
+    showToast('⚠️ 处理失败，请稍后重试');
+    console.error(err);
+  }
+  document.getElementById('ai-submit-btn').disabled=false;
+  document.getElementById('ai-submit-btn').textContent='⚡ 立即润色';
+}
+
+function copyAiResult(){
+  navigator.clipboard.writeText(document.getElementById('ai-result-text').textContent)
+    .then(()=>showToast('✅ 已复制到剪贴板'));
+}
+
+// ── HUMAN ORDER ──
+async function submitHumanOrder(){
+  const lang=document.getElementById('sub-lang').value;
+  const style=document.getElementById('sub-style').value;
+  const email=document.getElementById('sub-email').value.trim();
+  const note=document.getElementById('sub-note').value;
+  const text=document.getElementById('sub-text').value.trim();
+  if(!lang){showToast('⚠️ 请选择文章语言');return;}
+  if(!email||!email.includes('@')){showToast('⚠️ 请填写有效的联系邮箱');return;}
+  if(!text){showToast('⚠️ 请粘贴文章内容');return;}
+  const wc=countWords(text);
+  const id='HP'+Date.now();
+  const {error}=await sb.from('orders').insert({
+    id,user_email:email,user_name:email.split('@')[0],
+    lang,style,note,content:text,word_count:wc,status:'pending',type:'human'
+  });
+  if(error){showToast('⚠️ 提交失败，请稍后重试');console.error(error);return;}
+  document.getElementById('sub-lang').value='';
+  document.getElementById('sub-email').value='';
+  document.getElementById('sub-note').value='';
+  document.getElementById('sub-text').value='';
+  document.getElementById('wc-display').textContent='0';
+  showToast('✅ 申请已提交！编辑会在 24 小时内通过 '+email+' 联系你报价');
+}
+  const today=new Date().toISOString().slice(0,10);
+  const {data}=await sb.from('orders').select('word_count').eq('user_email',currentUser.email).gte('created_at',today);
+  const used=(data||[]).reduce((s,o)=>s+(o.word_count||0),0);
+  const el=document.getElementById('daily-used');if(el)el.textContent=used;
+  return used;
+}
+
+// ── REGISTER ──
+async function handleRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const lang=document.getElementById('regLang').value;
+  if(!name||!email||!pass){showToast('⚠️ 请填写完整信息');return;}
+  if(!email.includes('@')){showToast('⚠️ 请输入有效邮箱');return;}
+  if(pass.length<8){showToast('⚠️ 密码至少 8 位字符');return;}
+  const {data:exist}=await sb.from('users').select('id').eq('email',email).single();
+  if(exist){showToast('⚠️ 该邮箱已注册，请直接登录');return;}
+  const {error}=await sb.from('users').insert({name,email,password:pass,lang,verified:false});
+  if(error){showToast('⚠️ 注册失败，请稍后重试');return;}
+  currentUser={name,email,lang,verified:false};
+  localStorage.setItem('hp_user',JSON.stringify(currentUser));
+  document.getElementById('formRegister').style.display='none';
+  document.getElementById('successMsg').style.display='block';
+  updateNav();checkVerifyBanner();setTimeout(closeModal,3200);
+}
+
+// ── LOGIN ──
+async function handleLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showToast('⚠️ 请填写邮箱和密码');return;}
+  const {data,error}=await sb.from('users').select('*').eq('email',email).eq('password',pass).single();
+  if(error||!data){showToast('⚠️ 邮箱或密码错误');return;}
+  currentUser={name:data.name,email:data.email,lang:data.lang,verified:data.verified};
+  localStorage.setItem('hp_user',JSON.stringify(currentUser));
+  updateNav();checkVerifyBanner();closeModal();showToast('✅ 登录成功，欢迎回来！');
+}
+
+// ── SUBMIT ORDER ──
+async function submitOrder(){
+  if(!currentUser){openModal('login');return;}
+  const lang=document.getElementById('sub-lang').value;
+  const style=document.getElementById('sub-style').value;
+  const note=document.getElementById('sub-note').value;
+  const text=document.getElementById('sub-text').value.trim();
+  if(!lang){showToast('⚠️ 请选择文章语言');return;}
+  if(!text){showToast('⚠️ 请粘贴文章内容');return;}
+  const wc=countWords(text);
+  if(wc>3000){showToast('⚠️ 文章超过 3,000 词');return;}
+  const used=await loadDailyUsed();
+  if(used+wc>3000){showToast('⚠️ 今日额度不足，剩余 '+(3000-used)+' 词');return;}
+  const id='HP'+Date.now();
+  const {error}=await sb.from('orders').insert({id,user_email:currentUser.email,user_name:currentUser.name,lang,style,note,content:text,word_count:wc,status:'pending'});
+  if(error){showToast('⚠️ 提交失败，请稍后重试');return;}
+  document.getElementById('sub-lang').value='';document.getElementById('sub-note').value='';document.getElementById('sub-text').value='';document.getElementById('wc-display').textContent='0';
+  showToast('✅ 提交成功！编辑将在 24 小时内完成，结果发送至 '+currentUser.email);
+  setTimeout(()=>showPage('orders'),1800);
+}
+
+// ── RENDER ORDERS ──
+async function renderOrders(){
+  const list=document.getElementById('orders-list');
+  list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);">加载中…</div>';
+  const {data,error}=await sb.from('orders').select('*').eq('user_email',currentUser.email).order('created_at',{ascending:false});
+  if(error){list.innerHTML='<div style="color:var(--red);padding:20px;">加载失败，请刷新重试</div>';return;}
+  userOrders=data||[];
+  if(!userOrders.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>还没有提交过任何润色任务</p><br><button class="btn-primary" onclick="showPage(\'submit\')">提交第一篇</button></div>';return;}
+  list.innerHTML=userOrders.map(o=>`
+    <div class="order-card">
+      <div class="order-head">
+        <div><div class="order-title">${o.lang} · ${o.style}</div><div class="order-meta">${o.id} · ${new Date(o.created_at).toLocaleString('zh-CN')} · ${o.word_count} 词</div></div>
+        <span class="order-status ${o.status==='done'?'status-done':'status-pending'}">${o.status==='done'?'✓ 已完成':'⏳ 处理中'}</span>
+      </div>
+      <div class="order-preview">${(o.content||'').substring(0,120)}…</div>
+      ${o.status==='done'&&o.result?`<div style="margin-top:10px;"><button class="btn-sm" style="border-color:var(--blue);color:var(--blue);" onclick="viewResult('${o.id}')">查看润色结果 →</button></div>`:''}
+    </div>`).join('');
+}
+function viewResult(id){
+  const o=userOrders.find(x=>x.id===id);if(!o||!o.result)return;
+  const w=window.open('','_blank');
+  w.document.write(`<html><body style="font-family:sans-serif;padding:40px;max-width:800px;margin:0 auto;line-height:1.8;"><h2 style="margin-bottom:20px;">润色结果 · ${o.id}</h2><pre style="white-space:pre-wrap;font-family:inherit;">${o.result}</pre></body></html>`);
+}
+
+// ── FILE UPLOAD ──
+function handleFiles(files){
+  for(const f of files){
+    if(uploadedFiles.length>=3){showToast('⚠️ 最多上传 3 个文件');break;}
+    if(f.size>10*1024*1024){showToast('⚠️ 文件 '+f.name+' 超过 10MB');continue;}
+    if(uploadedFiles.find(x=>x.name===f.name))continue;
+    const reader=new FileReader();
+    reader.onload=e=>{uploadedFiles.push({name:f.name,size:f.size,type:f.type,data:e.target.result});renderFileList();};
+    reader.readAsDataURL(f);
+  }
+}
+function renderFileList(){
+  document.getElementById('file-list').innerHTML=uploadedFiles.map((f,i)=>`
+    <div class="file-item"><span class="fname">📄 ${f.name}</span><span class="fsize">${(f.size/1024).toFixed(0)} KB</span><button class="fdel" onclick="removeFile(${i})">✕</button></div>`).join('');
+}
+function removeFile(i){uploadedFiles.splice(i,1);renderFileList();}
+const uz=document.getElementById('upload-zone');
+if(uz){uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('dragover');});uz.addEventListener('dragleave',()=>uz.classList.remove('dragover'));uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('dragover');handleFiles(e.dataTransfer.files);});}
+
+// ── SUBMIT CONTACT ──
+async function submitContact(){
+  const name=document.getElementById('ct-name').value.trim();
+  const email=document.getElementById('ct-email').value.trim();
+  const lang=document.getElementById('ct-lang').value;
+  const style=document.getElementById('ct-style').value;
+  const note=document.getElementById('ct-note').value.trim();
+  if(!name){showToast('⚠️ 请填写姓名');return;}
+  if(!email||!email.includes('@')){showToast('⚠️ 请填写有效邮箱');return;}
+  if(!lang){showToast('⚠️ 请选择文章语言');return;}
+  if(!uploadedFiles.length){showToast('⚠️ 请至少上传一个文件');return;}
+  const id='CT'+Date.now();
+  const {error}=await sb.from('contacts').insert({id,name,email,lang,style,note,status:'new'});
+  if(error){showToast('⚠️ 提交失败，请稍后重试');return;}
+  for(const f of uploadedFiles){await sb.from('contact_files').insert({contact_id:id,file_name:f.name,file_size:f.size,file_type:f.type,file_data:f.data});}
+  document.getElementById('ct-name').value='';document.getElementById('ct-email').value='';document.getElementById('ct-lang').value='';document.getElementById('ct-note').value='';
+  uploadedFiles=[];renderFileList();
+  showToast('✅ 提交成功！我们会在 24 小时内通过 '+email+' 联系你');
+}
+
+// ── MODAL ──
+function openModal(tab){document.getElementById('authOverlay').classList.add('active');switchTab(tab||'register');document.getElementById('successMsg').style.display='none';}
+function closeModal(){document.getElementById('authOverlay').classList.remove('active');document.getElementById('successMsg').style.display='none';document.getElementById('formRegister').style.display='block';document.getElementById('formLogin').style.display='none';}
+function closeModalOutside(e){if(e.target===document.getElementById('authOverlay'))closeModal();}
+function switchTab(tab){document.getElementById('formRegister').style.display=tab==='register'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('tabRegister').className='tab'+(tab==='register'?' active':'');document.getElementById('tabLogin').className='tab'+(tab==='login'?' active':'');}
+
+// ── FAQ ──
+function toggleFaq(btn){const item=btn.closest('.faq-item'),isOpen=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!isOpen)item.classList.add('open');}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display='none',3400);}
+
+// ── COUNTERS ──
+function animateCounters(){document.querySelectorAll('[data-target]').forEach(el=>{const target=+el.dataset.target,suffix=target>=1000?'+':'%';let cur=0;const step=target/55;const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=(target>=1000?Math.round(cur).toLocaleString():Math.round(cur))+suffix;if(cur>=target)clearInterval(t);},16);});}
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){animateCounters();obs.disconnect();}});},{threshold:.3});
+const tb=document.querySelector('.stats-bar');if(tb)obs.observe(tb);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>
