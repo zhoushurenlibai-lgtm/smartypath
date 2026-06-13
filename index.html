@@ -749,6 +749,10 @@ function switchMode(mode){
   }
 }
 
+// ── WORD COUNT ──
+function countWords(t){return t.trim()?t.trim().split(/\s+/).length:0;}
+function updateWordCount(){const el=document.getElementById('wc-display');if(el){const wc=countWords(document.getElementById('sub-text').value);el.textContent=wc;}}
+
 // ── AI WORD COUNT ──
 function updateAiWordCount(){
   const wc=countWords(document.getElementById('ai-text').value);
