@@ -25,19 +25,18 @@
   body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;overflow-x:hidden;}
 
   /* ── NAV ── */
-  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:2px solid var(--blue);box-shadow:var(--shadow);padding:0 52px;display:flex;align-items:stretch;justify-content:space-between;height:60px;}
-  .nav-left{display:flex;align-items:center;gap:32px;}
-  .logo{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--blue);letter-spacing:.02em;text-decoration:none;line-height:1;}
-  .logo-tag{font-size:.62rem;color:var(--muted);font-family:var(--sans);font-weight:400;letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:1px;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:2px solid var(--blue);box-shadow:var(--shadow);padding:0 40px;display:flex;align-items:stretch;justify-content:space-between;height:60px;}
+  .logo{font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--blue);letter-spacing:.02em;text-decoration:none;line-height:1;display:flex;flex-direction:column;justify-content:center;flex-shrink:0;}
+  .logo-tag{font-size:.58rem;color:var(--muted);font-family:var(--sans);font-weight:400;letter-spacing:.1em;text-transform:uppercase;margin-top:1px;}
   nav ul{list-style:none;display:flex;gap:0;align-items:stretch;height:100%;}
   nav ul li{display:flex;align-items:center;}
-  nav ul a{text-decoration:none;color:var(--ink3);font-size:.84rem;font-weight:400;padding:0 14px;height:100%;display:flex;align-items:center;border-bottom:3px solid transparent;transition:all .2s;letter-spacing:.02em;}
+  nav ul a{text-decoration:none;color:var(--ink3);font-size:.82rem;font-weight:400;padding:0 12px;height:100%;display:flex;align-items:center;border-bottom:3px solid transparent;transition:all .2s;letter-spacing:.02em;white-space:nowrap;}
   nav ul a:hover{color:var(--blue);border-bottom-color:var(--blue);}
-  .nav-cta{background:var(--blue)!important;color:#fff!important;border-radius:3px;padding:8px 20px!important;height:auto!important;border-bottom:none!important;font-weight:600!important;font-size:.84rem!important;margin-left:8px;}
+  .nav-cta{background:var(--blue)!important;color:#fff!important;border-radius:3px;padding:7px 16px!important;height:auto!important;border-bottom:none!important;font-weight:600!important;margin-left:4px;}
   .nav-cta:hover{background:var(--blue-dim)!important;border-bottom:none!important;}
-  #nav-user-area{display:none;align-items:center;gap:8px;}
-  .user-name{font-size:.82rem;color:var(--muted);}
-  .btn-sm{background:transparent;border:1px solid var(--border2);color:var(--ink3);padding:5px 12px;border-radius:3px;font-size:.78rem;font-family:var(--sans);cursor:pointer;transition:all .2s;}
+  #nav-user-area{display:none;align-items:center;gap:6px;}
+  .user-name{font-size:.8rem;color:var(--muted);white-space:nowrap;}
+  .btn-sm{background:transparent;border:1px solid var(--border2);color:var(--ink3);padding:5px 11px;border-radius:3px;font-size:.78rem;font-family:var(--sans);cursor:pointer;transition:all .2s;white-space:nowrap;}
   .btn-sm:hover{border-color:var(--blue);color:var(--blue);}
 
   /* ── HERO ── */
@@ -274,22 +273,22 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-left">
-    <a class="logo" href="#" onclick="showPage('home')">Smartypath<span class="logo-tag">AI Text Humanization</span></a>
-    <ul id="nav-guest">
-      <li><a href="#why" onclick="showPage('home')">服务介绍</a></li>
-      <li><a href="#news" onclick="showPage('home')">最新资讯</a></li>
-      <li><a href="#free" onclick="showPage('home')">定价</a></li>
-      <li><a href="#" onclick="showPage('contact')">联系我们</a></li>
-      <li><a href="#" class="nav-cta" onclick="openModal('register')">免费注册</a></li>
-    </ul>
-  </div>
+  <a class="logo" href="#" onclick="showPage('home')">Smartypath<span class="logo-tag">AI Text Humanization</span></a>
+  <ul id="nav-guest">
+    <li><a href="#why" onclick="showPage('home')">服务介绍</a></li>
+    <li><a href="#" onclick="showPage('submit')">润色服务</a></li>
+    <li><a href="#news" onclick="showPage('home')">最新资讯</a></li>
+    <li><a href="#free" onclick="showPage('home')">定价</a></li>
+    <li><a href="#" onclick="showPage('contact')">联系我们</a></li>
+    <li><a href="#" onclick="openModal('login')" style="color:var(--blue);">登录</a></li>
+    <li><a href="#" class="nav-cta" onclick="openModal('register')">免费注册</a></li>
+  </ul>
   <div id="nav-user-area">
     <span class="user-name" id="nav-username"></span>
-    <button class="btn-sm" onclick="showPage('submit')">提交文章</button>
+    <button class="btn-sm" onclick="showPage('submit')">润色服务</button>
     <button class="btn-sm" onclick="showPage('orders')">我的订单</button>
     <button class="btn-sm" onclick="showPage('contact')">联系我们</button>
-    <button class="btn-sm" onclick="logout()">退出</button>
+    <button class="btn-sm" onclick="logout()">退出登录</button>
   </div>
 </nav>
 
