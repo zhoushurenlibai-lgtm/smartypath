@@ -662,12 +662,34 @@ async function resendVerify(){ showToast('📧 验证邮件已重新发送至 '+
 // ── PAGES ──
 const allPages=['home-page','submit-page','orders-page','contact-page','news-detail-page'];
 function showPage(page){
-  allPages.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
-  if(page==='home'){document.getElementById('home-page').style.display='block';}
-  else if(page==='submit'){document.getElementById('submit-page').style.display='block';window.scrollTo(0,0);}
-  else if(page==='orders'){if(!currentUser){openModal('login');return;}document.getElementById('orders-page').style.display='block';renderOrders();window.scrollTo(0,0);}
-  else if(page==='contact'){document.getElementById('contact-page').style.display='block';window.scrollTo(0,0);}
-  else if(page==='news-detail'){document.getElementById('news-detail-page').style.display='block';window.scrollTo(0,0);}
+  allPages.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ el.style.display='none'; }
+  });
+  if(page==='home'){
+    document.getElementById('home-page').style.display='block';
+  } else if(page==='submit'){
+    const el=document.getElementById('submit-page');
+    el.style.display='block';
+    el.style.minHeight='100vh';
+    window.scrollTo(0,0);
+  } else if(page==='orders'){
+    if(!currentUser){openModal('login');return;}
+    const el=document.getElementById('orders-page');
+    el.style.display='block';
+    el.style.minHeight='100vh';
+    renderOrders();window.scrollTo(0,0);
+  } else if(page==='contact'){
+    const el=document.getElementById('contact-page');
+    el.style.display='block';
+    el.style.minHeight='100vh';
+    window.scrollTo(0,0);
+  } else if(page==='news-detail'){
+    const el=document.getElementById('news-detail-page');
+    el.style.display='block';
+    el.style.minHeight='100vh';
+    window.scrollTo(0,0);
+  }
 }
 showPage('home');
 
