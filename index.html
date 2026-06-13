@@ -815,6 +815,9 @@ async function submitHumanOrder(){
   document.getElementById('wc-display').textContent='0';
   showToast('✅ 申请已提交！编辑会在 24 小时内通过 '+email+' 联系你报价');
 }
+
+async function loadDailyUsed(){
+  if(!currentUser)return 0;
   const today=new Date().toISOString().slice(0,10);
   const {data}=await sb.from('orders').select('word_count').eq('user_email',currentUser.email).gte('created_at',today);
   const used=(data||[]).reduce((s,o)=>s+(o.word_count||0),0);
