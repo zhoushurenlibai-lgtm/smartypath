@@ -479,7 +479,7 @@
     <!-- MODE TABS -->
     <div style="display:flex;border:1px solid var(--border);background:#fff;margin-bottom:24px;overflow:hidden;">
       <button id="mode-tab-ai" onclick="switchMode('ai')" style="flex:1;padding:16px;border:none;background:var(--blue);color:#fff;font-family:var(--sans);font-size:.93rem;font-weight:600;cursor:pointer;transition:all .2s;border-right:1px solid var(--border);">
-        ⚡ AI 快速润色 <span style="font-size:.75rem;opacity:.8;display:block;font-weight:400;margin-top:2px;">免费 · 即时出结果</span>
+        ⚡ 快速润色 <span style="font-size:.75rem;opacity:.8;display:block;font-weight:400;margin-top:2px;">免费 · 即时出结果</span>
       </button>
       <button id="mode-tab-human" onclick="switchMode('human')" style="flex:1;padding:16px;border:none;background:#fff;color:var(--ink3);font-family:var(--sans);font-size:.93rem;font-weight:600;cursor:pointer;transition:all .2s;">
         ✍️ 人工精品润色 <span style="font-size:.75rem;color:var(--muted);display:block;font-weight:400;margin-top:2px;">收费 · 真人编辑 · 24h交付</span>
@@ -490,7 +490,7 @@
     <div id="mode-ai">
       <div class="form-card">
         <div style="background:var(--blue-light);border:1px solid #C5D3E8;padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:var(--blue);line-height:1.6;">
-          <strong>说明：</strong> AI 快速润色使用 DeepSeek 大模型自动处理，去除常见 AI 写作特征，结果即时返回。无需登录，完全免费。效果优于普通 AI 工具，但不及真人编辑。
+          <strong>说明：</strong> 快速润色自动去除常见 AI 写作特征，结果即时返回。无需登录，完全免费。效果优于普通 AI 工具，但不及真人编辑。
         </div>
         <div class="field">
           <label>文章语言 *</label>
@@ -511,27 +511,27 @@
         </div>
         <div class="field">
           <label>文章原文 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（最多 1,000 词）</span></label>
-          <textarea id="ai-text" placeholder="在此粘贴你的 AI 生成文章..." oninput="updateAiWordCount()" style="min-height:200px;"></textarea>
+          <textarea id="ai-text" placeholder="在此粘贴你的英文或俄文文章..." oninput="updateAiWordCount()" style="min-height:180px;"></textarea>
           <div class="word-count"><span id="ai-wc">0</span> / 1,000 词</div>
         </div>
         <button class="btn-primary" id="ai-submit-btn" style="width:100%;padding:13px;" onclick="runAiPolish()">⚡ 立即润色</button>
 
-        <!-- RESULT -->
-        <div id="ai-result-box" style="display:none;margin-top:24px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <span style="font-size:.78rem;font-weight:600;color:var(--green);letter-spacing:.08em;text-transform:uppercase;">✓ 润色完成</span>
-            <button onclick="copyAiResult()" style="background:none;border:1px solid var(--border2);padding:5px 14px;font-size:.78rem;color:var(--blue);cursor:pointer;font-family:var(--sans);border-radius:2px;">复制结果</button>
-          </div>
-          <div id="ai-result-text" style="background:var(--bg);border:1px solid var(--border);padding:18px;font-size:.9rem;line-height:1.8;color:var(--ink);white-space:pre-wrap;max-height:400px;overflow-y:auto;"></div>
-          <div style="margin-top:14px;padding:12px 16px;background:var(--gold-light);border:1px solid #D4B870;font-size:.82rem;color:var(--gold);line-height:1.6;">
-            💡 需要更高质量、能通过 Turnitin 等严格检测的润色？试试我们的 <a href="#" onclick="switchMode('human')" style="color:var(--blue);font-weight:600;">人工精品润色</a>。
-          </div>
-        </div>
-
         <!-- LOADING -->
         <div id="ai-loading" style="display:none;text-align:center;padding:32px;color:var(--muted);font-size:.9rem;">
           <div style="font-size:1.5rem;margin-bottom:10px;animation:spin 1.5s linear infinite;display:inline-block;">⚙️</div>
-          <div>DeepSeek 正在处理中，请稍候…</div>
+          <div>正在处理中，请稍候…</div>
+        </div>
+
+        <!-- RESULT -->
+        <div id="ai-result-box" style="display:none;margin-top:24px;padding-top:24px;border-top:2px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <label style="font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);font-weight:600;">✓ 润色结果</label>
+            <button onclick="copyAiResult()" style="background:none;border:1px solid var(--border2);padding:5px 14px;font-size:.78rem;color:var(--blue);cursor:pointer;font-family:var(--sans);border-radius:2px;">📋 复制结果</button>
+          </div>
+          <textarea id="ai-result-text" readonly style="width:100%;min-height:200px;background:var(--green-light);border:1px solid #A8D4B5;padding:16px;font-size:.9rem;line-height:1.8;color:var(--ink);font-family:var(--sans);resize:vertical;outline:none;border-radius:2px;"></textarea>
+          <div style="margin-top:14px;padding:12px 16px;background:var(--gold-light);border:1px solid #D4B870;font-size:.82rem;color:var(--gold);line-height:1.6;">
+            💡 需要更高质量、能通过 Turnitin 等严格检测的润色？试试我们的 <a href="#" onclick="switchMode('human')" style="color:var(--blue);font-weight:600;">人工精品润色</a>。
+          </div>
         </div>
       </div>
     </div>
@@ -540,16 +540,22 @@
     <div id="mode-human" style="display:none;">
       <div class="form-card">
         <div style="background:var(--blue-light);border:1px solid #C5D3E8;padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:var(--blue);line-height:1.6;">
-          <strong>说明：</strong> 提交后编辑会通过邮件与你联系，根据文章长度和复杂度给出报价。确认后 24 小时内完成交付。
+          <strong>说明：</strong> 上传你的文档并留下邮箱，编辑会根据文章长度和复杂度给出报价。确认后 24 小时内完成真人精品润色。
         </div>
-        <div class="field"><label>文章语言 *</label><select id="sub-lang"><option value="">请选择语言</option><option value="English">🇬🇧 English（英语）</option><option value="Russian">🇷🇺 Русский（俄语）</option></select></div>
-        <div class="field"><label>润色风格</label><select id="sub-style"><option value="自然流畅">自然流畅（通用）</option><option value="学术严谨">学术 / 论文</option><option value="商务专业">商务 / 职场</option><option value="轻松口语">轻松 / 博客</option><option value="创意文学">创意 / 文学</option></select></div>
-        <div class="field"><label>联系邮箱 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（编辑将通过此邮箱与你联系报价）</span></label><input type="email" id="sub-email" placeholder="your@email.com"></div>
-        <div class="field"><label>备注说明（可选）</label><input type="text" id="sub-note" placeholder="例如：保留所有引用格式；不要使用第一人称…"></div>
+        <div class="field"><label>你的姓名 *</label><input type="text" id="hu-name" placeholder="你的名字或昵称"></div>
+        <div class="field"><label>联系邮箱 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（编辑将通过此邮箱回复报价）</span></label><input type="email" id="hu-email" placeholder="your@email.com"></div>
+        <div class="field"><label>文章语言 *</label><select id="hu-lang"><option value="">请选择语言</option><option value="English">🇬🇧 English（英语）</option><option value="Russian">🇷🇺 Русский（俄语）</option></select></div>
+        <div class="field"><label>润色风格</label><select id="hu-style"><option value="自然流畅">自然流畅（通用）</option><option value="学术严谨">学术 / 论文</option><option value="商务专业">商务 / 职场</option><option value="轻松口语">轻松 / 博客</option><option value="创意文学">创意 / 文学</option></select></div>
+        <div class="field"><label>备注说明（可选）</label><textarea id="hu-note" placeholder="例如：保留所有引用格式；论文 3000 字左右；希望本周内完成…" style="min-height:80px;"></textarea></div>
         <div class="field">
-          <label>文章原文 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（字数越多报价越准确）</span></label>
-          <textarea id="sub-text" placeholder="在此粘贴你的 AI 生成文章..." oninput="updateWordCount()" style="min-height:200px;"></textarea>
-          <div class="word-count"><span id="wc-display">0</span> 词</div>
+          <label>上传文档 * <span style="font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0;">（.doc .docx .pdf .txt，最多 3 个，单个 ≤ 10MB）</span></label>
+          <div class="upload-zone" id="hu-upload-zone">
+            <input type="file" id="hu-file-input" accept=".doc,.docx,.pdf,.txt" multiple onchange="handleHuFiles(this.files)">
+            <div class="u-icon">📎</div>
+            <p><strong>点击选择文档</strong>，或将文件拖拽到此处</p>
+            <p style="font-size:.75rem;margin-top:4px;color:#B0A898;">.doc · .docx · .pdf · .txt</p>
+          </div>
+          <div class="file-list" id="hu-file-list"></div>
         </div>
         <button class="btn-primary" style="width:100%;padding:13px;background:var(--ink);" onclick="submitHumanOrder()">✍️ 提交人工润色申请</button>
         <p class="form-note">提交后编辑会在 <strong>24 小时内</strong>通过邮件回复报价，确认后开始处理。无需先付款。</p>
@@ -773,7 +779,7 @@ async function runAiPolish(){
     });
     const data=await resp.json();
     if(!resp.ok||!data.result) throw new Error(data.error||'No result');
-    document.getElementById('ai-result-text').textContent=data.result;
+    document.getElementById('ai-result-text').value=data.result;
     document.getElementById('ai-result-box').style.display='block';
     document.getElementById('ai-loading').style.display='none';
     showToast('✅ AI 润色完成！');
@@ -787,32 +793,57 @@ async function runAiPolish(){
 }
 
 function copyAiResult(){
-  navigator.clipboard.writeText(document.getElementById('ai-result-text').textContent)
-    .then(()=>showToast('✅ 已复制到剪贴板'));
+  const el=document.getElementById('ai-result-text');
+  el.select();
+  navigator.clipboard.writeText(el.value).then(()=>showToast('✅ 已复制到剪贴板'));
+}
+
+// ── 人工润色文件上传 ──
+let huFiles=[];
+function handleHuFiles(files){
+  for(const f of files){
+    if(huFiles.length>=3){showToast('⚠️ 最多上传 3 个文件');break;}
+    if(f.size>10*1024*1024){showToast('⚠️ 文件 '+f.name+' 超过 10MB');continue;}
+    if(huFiles.find(x=>x.name===f.name))continue;
+    const reader=new FileReader();
+    reader.onload=e=>{huFiles.push({name:f.name,size:f.size,type:f.type,data:e.target.result});renderHuFileList();};
+    reader.readAsDataURL(f);
+  }
+}
+function renderHuFileList(){
+  document.getElementById('hu-file-list').innerHTML=huFiles.map((f,i)=>`
+    <div class="file-item"><span class="fname">📄 ${f.name}</span><span class="fsize">${(f.size/1024).toFixed(0)} KB</span><button class="fdel" onclick="removeHuFile(${i})">✕</button></div>`).join('');
+}
+function removeHuFile(i){huFiles.splice(i,1);renderHuFileList();}
+const huUz=document.getElementById('hu-upload-zone');
+if(huUz){
+  huUz.addEventListener('dragover',e=>{e.preventDefault();huUz.classList.add('dragover');});
+  huUz.addEventListener('dragleave',()=>huUz.classList.remove('dragover'));
+  huUz.addEventListener('drop',e=>{e.preventDefault();huUz.classList.remove('dragover');handleHuFiles(e.dataTransfer.files);});
 }
 
 // ── HUMAN ORDER ──
 async function submitHumanOrder(){
-  const lang=document.getElementById('sub-lang').value;
-  const style=document.getElementById('sub-style').value;
-  const email=document.getElementById('sub-email').value.trim();
-  const note=document.getElementById('sub-note').value;
-  const text=document.getElementById('sub-text').value.trim();
-  if(!lang){showToast('⚠️ 请选择文章语言');return;}
+  const name=document.getElementById('hu-name').value.trim();
+  const email=document.getElementById('hu-email').value.trim();
+  const lang=document.getElementById('hu-lang').value;
+  const style=document.getElementById('hu-style').value;
+  const note=document.getElementById('hu-note').value.trim();
+  if(!name){showToast('⚠️ 请填写你的姓名');return;}
   if(!email||!email.includes('@')){showToast('⚠️ 请填写有效的联系邮箱');return;}
-  if(!text){showToast('⚠️ 请粘贴文章内容');return;}
-  const wc=countWords(text);
-  const id='HP'+Date.now();
-  const {error}=await sb.from('orders').insert({
-    id,user_email:email,user_name:email.split('@')[0],
-    lang,style,note,content:text,word_count:wc,status:'pending',type:'human'
-  });
+  if(!lang){showToast('⚠️ 请选择文章语言');return;}
+  if(!huFiles.length){showToast('⚠️ 请至少上传一个文档');return;}
+  const id='CT'+Date.now();
+  const {error}=await sb.from('contacts').insert({id,name,email,lang,style,note,status:'new'});
   if(error){showToast('⚠️ 提交失败，请稍后重试');console.error(error);return;}
-  document.getElementById('sub-lang').value='';
-  document.getElementById('sub-email').value='';
-  document.getElementById('sub-note').value='';
-  document.getElementById('sub-text').value='';
-  document.getElementById('wc-display').textContent='0';
+  for(const f of huFiles){
+    await sb.from('contact_files').insert({contact_id:id,file_name:f.name,file_size:f.size,file_type:f.type,file_data:f.data});
+  }
+  document.getElementById('hu-name').value='';
+  document.getElementById('hu-email').value='';
+  document.getElementById('hu-lang').value='';
+  document.getElementById('hu-note').value='';
+  huFiles=[];renderHuFileList();
   showToast('✅ 申请已提交！编辑会在 24 小时内通过 '+email+' 联系你报价');
 }
 
